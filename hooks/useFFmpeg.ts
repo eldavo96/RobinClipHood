@@ -67,14 +67,12 @@ export function useFFmpeg() {
 
       let vf: string
       if (background === 'black') {
-        // Fondo negro — mas rapido que blur
         if (faceOffsetX !== undefined) {
           vf = `crop=ih*9/16:ih:iw*${faceOffsetX.toFixed(3)}-ih*9/16/2:0,scale=1080:1920,setsar=1,pad=1080:1920:(1080-iw)/2:(1920-ih)/2:black`
         } else {
           vf = 'scale=iw*min(1080/iw\\,1920/ih):ih*min(1080/iw\\,1920/ih),pad=1080:1920:(1080-iw)/2:(1920-ih)/2:black,setsar=1'
         }
       } else {
-        // Fondo borroso — aspecto mas profesional
         if (faceOffsetX !== undefined) {
           vf = `split[a][b];[a]crop=ih*9/16:ih:iw*${faceOffsetX.toFixed(3)}-ih*9/16/2:0[fg];[b]scale=1080:1920,boxblur=30:5[bg];[bg][fg]overlay=(W-w)/2:(H-h)/2,scale=1080:1920,setsar=1`
         } else {
@@ -91,7 +89,7 @@ export function useFFmpeg() {
       ])
       const clipData = await ff.readFile(out)
       await ff.deleteFile(out)
-      const blob = new Blob([clipData as Uint8Array], { type: 'video/mp4' })
+      const blob = new Blob([clipData as unknown as BlobPart], { type: 'video/mp4' })
       return memoryManager.trackObjectUrl(URL.createObjectURL(blob))
     }, []
   )
@@ -154,7 +152,7 @@ export function useFFmpeg() {
 
       const data = await ff.readFile(out) as Uint8Array
       await ff.deleteFile(out)
-      const blob = new Blob([data], { type: 'video/mp4' })
+      const blob = new Blob([data as unknown as BlobPart], { type: 'video/mp4' })
       return memoryManager.trackObjectUrl(URL.createObjectURL(blob))
     }, []
   )
