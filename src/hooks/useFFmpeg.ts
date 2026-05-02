@@ -91,7 +91,7 @@ export function useFFmpeg() {
       ])
       const clipData = await ff.readFile(out)
       await ff.deleteFile(out)
-      const blob = new Blob([clipData as Uint8Array], { type: 'video/mp4' })
+      const blob = new Blob([clipData as unknown as BlobPart], { type: 'video/mp4' })
       return memoryManager.trackObjectUrl(URL.createObjectURL(blob))
     }, []
   )
@@ -154,7 +154,7 @@ export function useFFmpeg() {
 
       const data = await ff.readFile(out) as Uint8Array
       await ff.deleteFile(out)
-      const blob = new Blob([data], { type: 'video/mp4' })
+      const blob = new Blob([data as unknown as BlobPart], { type: 'video/mp4' })
       return memoryManager.trackObjectUrl(URL.createObjectURL(blob))
     }, []
   )
